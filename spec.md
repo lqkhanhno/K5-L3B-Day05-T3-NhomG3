@@ -62,28 +62,37 @@
 
 ## §3. Khi AI sai
 
-### ★ Kịch bản #3 — khách nói rõ chuyến nhưng không đủ chỗ
-- **AI nói nguyên văn:** "Chuyến BM 217 tối nay chỉ còn **1 chỗ**, trong khi đặt chỗ TRV-7Q2K có **2 hành khách** (anh Minh An và bé Gia Bình). Em **chưa đổi vé** và sẽ không đổi khi chưa có xác nhận của anh/chị. Chuyến sớm nhất còn đủ chỗ cho 2 người là **BM 201 · 13/11 07:00 (còn 9 chỗ)** — em đã **giữ chỗ trong 20 phút** (đếm ngược trên màn hình). Anh/chị bấm 'Đổi vé cho cả 2 người' để xác nhận, hoặc giữ chỗ và hỏi thêm."
-- **Người dùng thấy gì:** thẻ dữ liệu có ghi nguồn (`tra_cuu_dat_cho`), hai con số đối chiếu ngay trên thẻ (1 chỗ vs 2 hành khách), bộ đếm giữ chỗ 20:00, nút xác nhận đổi, nút chuyển nhân viên luôn hiển thị.
-- **Làm gì tiếp:** bấm xác nhận đổi (→ thẻ tổng kết ghi rõ "dùng lần đổi miễn phí duy nhất") / hỏi thêm (giữ chỗ vẫn chạy) / chuyển nhân viên. Không làm gì → giữ chỗ tự nhả sau 20 phút, không mất gì, không ai bị làm phiền.
-- **Ai được báo:** đổi xong → SMS/email vé mới cho cả 2 hành khách; giữ chỗ hết hạn → trạng thái hiện trên thẻ; chuyển nhân viên → nhân viên thấy toàn bộ transcript + giữ chỗ còn hạn.
-- **Quyết định: chặn tool + hiển thị căn cứ, KHÔNG hỏi lại.** Loại (a) *hỏi lại cho rõ* — khách đã nói rõ "chuyến tối nay"; hỏi lại không chữa được việc thiếu chỗ, chỉ gây khó chịu với khách đang gấp. Loại (b) *tự đổi sang chuyến khác thay khách* — đổi vé đốt lần đổi miễn phí nên thuộc mức cần duyệt; AI không được tự gọi tool dù ý tốt.
-- **Loại lỗi:** nếu tool vẫn bị gọi khi thiếu chỗ → lỗi **hệ thống** (thiết kế cho phép gọi khi dữ liệu không đủ) → sửa bằng rào cản tầng gọi tool, không phải sửa câu chữ.
-- **Lỗi sửa câu chữ không cứu được:** sau khi `doi_chuyen_bay` đã chạy, xin lỗi mấy cũng không lấy lại lần đổi miễn phí duy nhất — chỉ thiết kế (gate xác nhận + kiểm tra chỗ trước khi gọi) cứu được.
-- **HAX/PAIR:** **G10** — không đủ dữ liệu thì thu hẹp phạm vi: chặn gọi tool, chỉ giữ chỗ; **G11** — giải thích vì sao: hai con số đối chiếu hiện ngay trên thẻ; **PAIR Trust** — dẫn nguồn để khách tự kiểm, tin đúng mức chứ không tin tối đa.
- 
+### ★ Kịch bản #3 — khách nói "ok lấy chuyến tối nay" nhưng BM 217 thiếu chỗ
+
+- **AI nói nguyên văn** (đúng thứ tự trên prototype, ca demo "②"):
+  1. Hộp xung đột: **"Phát hiện xung đột — BM 217 · tối nay: 1 chỗ ≠ Đặt chỗ của bạn: 2 người"**, rồi: *"Chuyến tối nay **BM 217 chỉ còn 1 chỗ**, không đủ cho bạn và bé Bình, nên mình **không đổi và không giữ chỗ** chuyến này."* — nhãn **⚠ Không làm theo được**, dòng "Dựa vào: tra_cuu_dat_cho: BM 217 còn 1 chỗ · TRV-7Q2K có 2 hành khách".
+  2. *"Thay vào đó, mình đã **giữ chỗ BM 201 · 07:00 sáng mai cho cả 2 người** trong 20 phút. **Vé cũ chưa thay đổi**, bạn chưa mất lần đổi miễn phí. Muốn đổi thì bấm xác nhận bên dưới."* — nhãn **✓ Có căn cứ**, kèm chip tool: `giu_cho_chuyen_moi(BM 217) → KHÔNG GỌI — chỉ còn 1 chỗ`.
+  3. Thẻ **"Xác nhận đổi vé"**: ghi đúng chuyến đích, ☑ đủ 2 tên hành khách, dòng vàng *"⚠ Dùng lần đổi miễn phí duy nhất. Sau khi đổi, muốn đổi lại phải qua nhân viên."* + 3 nút: Xác nhận đổi vé / Chọn chuyến khác / Gặp nhân viên.
+- **Người dùng thấy gì:** nhãn độ chắc ✓/⚠ trên từng câu (chỗ ②); dòng "Dựa vào" trích dữ liệu ngay dưới câu; **BM 217 bị khoá 🔒, không có nút chọn** trong danh sách chuyến (chỗ ③); giữ chỗ có đếm ngược + nút "Nhả chỗ" (chỗ ④).
+- **Làm gì tiếp:** bấm xác nhận trên thẻ (cú bấm duy nhất gọi `doi_chuyen_bay`) · chọn BM 205 thay · gặp nhân viên · **không làm gì → 20 phút sau chỗ tự nhả, vé cũ nguyên vẹn, không mất gì**.
+- **Ai được báo:** nhật ký quyết định ghi *"Không đổi sang BM 217 dù khách nói 'ok'"*; đổi xong → vé mới gửi ~60 phút cho cả 2 hành khách; hết hạn giữ chỗ → tin nhắn + trạng thái trên thẻ chuyến; nhân viên (nếu chuyển) thấy tóm tắt: tin khách nguyên văn, AI đã làm / chưa làm.
+- **Quyết định: dẫn bằng chứng + chặn tool. KHÔNG hỏi lại, KHÔNG tự đổi.** Phương án đã loại:
+  - *Hỏi lại "đổi cho mấy người?"* — dữ liệu đã có trong `tra_cuu_dat_cho`; hỏi lại điều hệ thống biết là làm khách đang gấp thêm phiền, và không chữa gốc: chỗ thiếu là **dữ liệu**, không phải thiếu ý định.
+  - *Tự đổi sang BM 201 vì "có lợi cho khách"* — đốt lần đổi miễn phí duy nhất → việc cần duyệt; AI làm đúng ý nhưng sai quyền.
+  - *Chuyển nhân viên ngay* — chưa cần: BM 201 còn 9 chỗ; chờ nhân viên chính là cái giá track ghi ("chuyến tốt nhất hết chỗ trong lúc chờ").
+- **Loại lỗi:** cái bị chặn là **lỗi hệ thống tiềm ẩn** (thiết kế cho phép gọi tool khi chỗ < số hành khách) → sửa ở **tầng chặn tool** (khoá chuyến, không có nút), không phải ở câu chữ. Nếu lọt qua → khách báo nhầm (#9) là lỗi của AI: xin lỗi nhận trách nhiệm, không đổ cho khách.
+- **Lỗi sửa câu chữ không cứu được:** sau khi `doi_chuyen_bay` đã chạy, không lời xin lỗi nào trả lại lần đổi miễn phí. Chỉ thiết kế chặn trước (khoá chuyến thiếu chỗ + thẻ xác nhận đủ 2 tên) cứu được.
+- **HAX/PAIR trỏ chỗ cụ thể:** **G10** — thu hẹp phạm vi khi không đủ dữ liệu: BM 217 khoá không nút, AI chỉ giữ chỗ thoả điều kiện (chỗ ③); **G11** — hộp xung đột "1 chỗ ≠ 2 người" giải thích vì sao ngay trước mắt (chỗ ③); **PAIR Explainability + Trust** — nhãn độ chắc + dòng "Dựa vào" để khách tự kiểm, tin đúng mức (chỗ ②).
+
 ### ★ Kịch bản #5 — khách đang giận đòi hoàn vé
- 
-- **AI nói nguyên văn:** "Em hiểu anh/chị đang bực vì chuyến bị huỷ ạ. Trước khi gửi hoàn vé, anh/chị đọc giúp em 3 dòng này: **(1)** Yêu cầu hoàn **gửi rồi thì không huỷ được**. **(2)** Tiền về **phương thức thanh toán gốc**, xử lý có thể tới **90 ngày**. **(3)** Đang có quyền lợi tốt hơn: **đổi miễn phí 1 lần trong 48 giờ** — chuyến BM 201 07:00 sáng mai còn 9 chỗ và em đã giữ chỗ 20 phút. Nếu vẫn muốn hoàn, em mở trang xác nhận riêng; nếu chỉ cần đi sớm nhất, bấm 'Đổi vé' là xong trong 1 phút."
-- **Người dùng thấy gì:** thẻ đỏ 3 dòng, ba lối đi song song (Hoàn vé / Đổi vé / Nhân viên) — không bó buộc khách, giữ chỗ đang đếm ngược làm lựa chọn "đổi" luôn còn giá trị.
-- **Làm gì tiếp:** vẫn muốn hoàn → **trang xác nhận riêng** (màn hình 2): thẻ tổng kết đúng những gì sẽ gửi (mã đặt chỗ, 2 hành khách, lý do "hãng huỷ — bất khả kháng thời tiết", tiền về phương thức gốc, dòng đỏ "sau khi gửi KHÔNG THỂ huỷ") + **giữ nút 2 giây để gửi**. Gửi xong → trạng thái đã gửi + số yêu cầu.
-- **Ai được báo:** email/SMS xác nhận gửi ngay; **ticket cho nhân viên hỗ trợ** theo dõi (tiền đang chờ xử lý tới 90 ngày — nhân viên là người nhận các ca phát sinh); AI nói thẳng mình không có quyền thu hồi.
-- **Quyết định: xác nhận 2 bước mạnh (trang riêng + giữ nút), không hỏi lại trong chat.** Loại (a) *hỏi "anh/chị chắc chứ?" trong chat* — khách đang giận bấm qua ngay (confirmation fatigue); loại (b) *chặn hẳn, bắt chờ nhân viên* — khách thật cần hoàn thì phải được hoàn, và chờ nhân viên đúng là cái giá track ghi: chuyến tốt nhất hết chỗ trong lúc chờ.
-- **Loại lỗi:** nếu AI đã gửi yêu cầu theo lời khách giận → lỗi **ngữ cảnh** (PAIR *context error*: hệ thống chạy đúng lệnh nhưng sai với tình huống của người dùng) → phải sửa **thiết kế** (confirmation gate), không chỉ câu chữ.
-- **Lỗi sửa câu chữ không cứu được:** yêu cầu hoàn đã gửi **không rút lại được** — chỉ thiết kế chặn trước cứu được.
-- **HAX/PAIR:** **G2** — làm rõ nó làm được tới đâu: nói trước điều không thể (không huỷ sau khi gửi); **G8** — gạt bỏ dễ dàng: 'Đổi vé' và 'Nhân viên' song song, khách đổi ý thoải mái; **PAIR Errors + Graceful Failure** — việc cấm (hứa bồi thường) không có nút, chỉ có câu chữ đúng dữ liệu.
-- **Minh bạch AI (G1):** đầu cuộc chat ghi rõ "Bạn đang chat với trợ lý AI — có thể chuyển nhân viên bất cứ lúc nào" (bám G1/G2 trong guide; tại VN, trách nhiệm minh bạch của hệ thống AI tương tác trực tiếp theo Luật 134/2025/QH15, hiệu lực 01/3/2026).
- 
+
+- **AI nói nguyên văn** (ca demo "③"): *"Mình hiểu bạn đang bực. Trước khi hoàn, bạn cần biết: (1) Yêu cầu hoàn vé **gửi rồi thì không rút lại được**. (2) Bạn sẽ **mất chỗ** trên mọi chuyến thay thế. (3) Tiền về phương thức thanh toán gốc, **tối đa 90 ngày**. (4) Huỷ do bão: được **hoàn toàn bộ, không có bồi thường tiền mặt**. Bạn vẫn còn **một lần đổi miễn phí** và BM 201 sáng mai còn 9 chỗ."* + 2 nút song song: "Xem phương án đổi vé" / "Tiếp tục soạn yêu cầu hoàn vé".
+- Khách vẫn muốn hoàn → bước 2: *"Mình đã soạn sẵn. **Chủ chưa có yêu cầu nào được gửi — chỉ bạn mới gửi được.**"* + thẻ hoàn vé (đặt chỗ, 2 hành khách, lý do, tiền về, 90 ngày) + **ô tích bắt buộc**: "Tôi hiểu yêu cầu hoàn vé gửi rồi không rút lại được và tôi sẽ mất chỗ trên mọi chuyến thay thế" → nút gửi **mờ tới khi tích ô**, kèm dòng *"Nút gửi thuộc về bạn — trợ lý AI không có nút này."*
+- **Người dùng thấy gì:** 4 hậu quả đặt **trước** bất kỳ nút gửi nào; hai lối đi song song (đổi / hoàn) — không ép khách; nhãn ✓ + "Dựa vào: chính sách Bay Mẫu (huỷ do thời tiết) · quy định hoàn vé"; bảng tool hiện `gui_yeu_cau_hoan_ve` = **"Cấm AI · khách tự gửi"** (chỗ ⑥).
+- **Làm gì tiếp:** xem phương án đổi (nháp hoàn **tự bỏ, chưa mất gì**) · tích ô + tự bấm gửi · hỏi nhân viên về tiền hoàn. Không làm gì → không có gì được gửi.
+- **Ai được báo:** gửi xong → bảng trạng thái "Khách đã tự gửi lúc … · không rút lại được" + nhật ký "Khách tự gửi yêu cầu hoàn vé"; email/SMS xác nhận (ngoài prototype); nhân viên nhận ca thấy trạng thái + toàn bộ nhật ký.
+- **Quyết định: dừng → nói hậu quả → tách "soạn" khỏi "gửi"; AI bị cấm nút gửi.** Phương án đã loại:
+  - *Hỏi "chắc không?" rồi AI gửi khi khách gõ "chắc"* — khách đang giận trả lời theo phản xạ; một dòng chat là rào cản quá mỏng cho việc không đảo được (confirmation fatigue).
+  - *AI gửi sau xác nhận trong chat* — nút không-đảo vẫn nằm trong tay AI; hiểu nhầm một tiếng "ừ" là mất chỗ + chờ 90 ngày.
+  - *Cấm hẳn hoàn vé, bắt chờ nhân viên* — hoàn là quyền chính đáng khi hãng huỷ; và chờ nhân viên cũng là một kiểu sai (chuyến tốt hết chỗ trong lúc chờ).
+- **Loại lỗi:** nếu AI gửi theo lời giận → **lỗi ngữ cảnh** (PAIR *context error*: chạy đúng lệnh nhưng sai với tình huống) → phải sửa bằng **thiết kế** (tách tool + ô tích), không chỉ câu chữ.
+- **Lỗi sửa câu chữ không cứu được:** yêu cầu đã gửi là không rút được — không câu xin lỗi nào lấy lại chỗ.
+- **HAX/PAIR trỏ chỗ cụ thể:** **G2** — nói rõ làm được tới đâu: 4 hậu quả + "AI không có nút gửi" (chỗ ①⑥); **PAIR Errors + Graceful Failure** — thiết kế phòng lỗi: `soan_yeu_cau_hoan_ve` AI tự làm, `gui_yeu_cau_hoan_ve` cấm AI, khách tích ô tự gửi (chỗ ⑥); **G1 + Luật AI 134/2025 (Đ.11, hiệu lực 01/3/2026)** — dải đầu chat "Bạn đang chat với trợ lý AI (có thể sai)…" (chỗ ①).
 
 ## §4. Mức tự chủ
 
