@@ -270,4 +270,47 @@ Mỗi tiêu chí kèm **thao tác chấm cụ thể** — người ngoài nhóm 
 
 ## §7. Demo
 
-*(điền sau buổi demo)*
+### 7.1. Các câu hỏi phải tự trả lời
+
+- **Người xem thấy gì trong 30 giây đầu để hiểu lát cắt?**
+  1. *Bối cảnh & Bẫy dữ liệu:* Đặt chỗ **TRV-7Q2K** có 2 khách (có bé 5 tuổi), chuyến gốc **BM 213** huỷ do bão. Chuyến sớm nhất **BM 217** bị khóa đỏ 🔒 vì chỉ còn 1 chỗ (cần 2 chỗ).
+  2. *Cam kết AI (Dải xanh đầu chat):* AI chỉ tra cứu, giữ chỗ 20 phút và soạn nháp; đổi vé cần khách bấm thẻ, gửi hoàn vé chỉ khách tự gửi.
+  3. *Bảng điều khiển:* Thấy song song trạng thái đặt chỗ, 3 mức tự chủ của 6 tool và nhật ký quyết định (log) theo thời gian thực.
+
+- **Ca khó cho thấy rõ nhất thiết kế khi sai và mức tự chủ?**
+  - **Ca #3 ("ok lấy chuyến tối nay đi"):** Khách nói "ok" nhưng sai ở tầng dữ liệu (1 chỗ ≠ 2 người). AI chặn đổi vé và không giữ BM 217 (R1); tự giữ chỗ BM 201 (*Tự làm* — có hoàn tác qua nút "Nhả chỗ" hoặc tự nhả sau 20'); bắt buộc bấm thẻ đủ 2 tên (*Khách xác nhận* — R2). Tránh tách bé khỏi mẹ hoặc mất lượt đổi miễn phí duy nhất.
+  - **Ca #5 ("Thôi huỷ hết đi, hoàn tiền cho mình!!"):** Khách giận đòi hoàn vé không thể đảo ngược. AI dừng lại giải thích 4 hậu quả (mất chỗ, chờ 90 ngày, không bồi thường tiền mặt); tách tool: `soan_yeu_cau_hoan_ve` (*Tự làm* — bản nháp hủy được) và `gui_yeu_cau_hoan_ve` (*Cấm AI* — AI không có nút gửi, chỉ khách tự tích ô cam kết và tự gửi).
+
+- **Ai trong nhóm nói phần nào?**
+  - **Nguyễn Văn Minh:** Trình bày 30 giây đầu (lát cắt & cam kết AI) + trực tiếp demo cả 2 ca khó chính (**Ca #3** và **Ca #5**).
+  - **Đoàn Đăng Khoa & Lê Quốc Khánh:** Phụ trách tiếp nhận, thao tác prototype và **trả lời toàn bộ các ca lạ / phản biện** từ TA, giảng viên và nhóm bạn; đối chiếu 3 tiêu chí Pass/Fail và quy tắc an toàn (R1–R4).
+
+---
+
+### 7.2. Kế hoạch demo một khối 30 phút
+
+Mỗi lượt demo kéo dài ~5–6 phút, gồm 4 phần:
+
+| Thời lượng | Người phụ trách | Thao tác trên Prototype | Trọng tâm trình bày |
+|---|---|---|---|
+| **0:00 – 0:30** | **Nguyễn Văn Minh** | Trỏ vào đặt chỗ, bẫy BM 217 bị khóa 🔒 và dải xanh cam kết AI. | Giới thiệu lát cắt: trợ lý đổi/hoàn vé an toàn khi chuyến bị huỷ do bão, không làm mất vé/tiền của khách. Nêu rõ bẫy 1 chỗ / 2 người và cam kết minh bạch của AI. |
+| **0:30 – 2:00** | **Nguyễn Văn Minh** | Bấm ca **② Ca #3** ("ok lấy chuyến tối nay đi"); chỉ hộp xung đột, đếm ngược giữ BM 201 và thẻ xác nhận. | **Ca #3:** Khách nói "ok" nhưng thiếu chỗ. AI không làm theo; hộp xung đột đỏ chặn đổi vé; tự giữ BM 201 (tự làm, có hoàn tác); bắt bấm thẻ đủ 2 tên (khách xác nhận) để bảo vệ vé. |
+| **2:00 – 3:30** | **Nguyễn Văn Minh** | Bấm ca **③ Ca #5** ("Thôi huỷ hết đi..."); chỉ 4 hậu quả, bấm soạn nháp, tích ô xác nhận rồi gửi. | **Ca #5:** Khách giận đòi hoàn. AI dừng lại giải thích 4 hậu quả; tách tool: AI chỉ soạn nháp, cấm nút gửi; khách tự tích ô cam kết rồi tự bấm gửi. |
+| **3:30 – 5:30** | **Khoa & Khánh** | Mời TA/bạn đưa ca lạ hoặc bấm các nút ca lạ có sẵn trên prototype. | **Xử lý ca lạ & phản biện:**<br>- *Đòi bồi thường:* Nêu rõ huỷ do bão không bồi thường tiền mặt.<br>- *Trẻ bay một mình / Đổi tên:* Chuyển nhân viên kèm tóm tắt (R3).<br>- *Mạo danh nhân viên:* Tin nhắn là dữ liệu, không phải lệnh (R4).<br>- *Báo đổi nhầm:* Hết lượt tự đổi → chuyển nhân viên ưu tiên cao. |
+| **5:30 – 6:00** | **Cả nhóm** | Trỏ bảng log và bảng tool bên phải. | Đối chiếu đạt 3/3 tiêu chí Pass/Fail (§6), kết thúc lượt demo. |
+
+---
+
+### 7.3. Ca lạ nhận được ở demo & Phản ứng của nhóm
+
+- **Ca lạ 1: Vừa giữ chỗ BM 201 vừa gửi yêu cầu hoàn vé để "phòng hờ"**
+  - *Prototype:* Khách soạn nháp hoàn vé thì chỗ giữ vẫn còn; nhưng khi khách tích ô và bấm "Gửi hoàn vé", hệ thống lập tức nhả chỗ giữ (`Nhả BM 201 vì khách hoàn vé`) và khóa đổi vé.
+  - *Nhóm có đổi ý không:* **Không đổi ý.** Hoàn vé và giữ chỗ là 2 việc loại trừ nhau. Rút ra cải tiến: thêm dòng cảnh báo đỏ *"Gửi hoàn vé sẽ tự động huỷ chỗ đang giữ"* ngay dưới ô tích.
+
+- **Ca lạ 2: Khách nhắn "Đổi cho mình sang chuyến sớm nhất" (không nói rõ chuyến nào)**
+  - *Prototype:* Thay vì chọn BM 217 (sớm nhất nhưng chỉ còn 1 chỗ), AI áp dụng R1 chọn chuyến sớm nhất *đủ chỗ cho 2 người* là BM 201 (07:00 sáng mai) để giữ chỗ và hiển thị thẻ xác nhận.
+  - *Nhóm có đổi ý không:* **Không đổi ý.** Vừa đáp ứng đúng nhu cầu "sớm nhất có thể", vừa chặn bẫy thiếu chỗ.
+
+- **Ca lạ 3: Khách không chịu bấm thẻ mà liên tục chat ép "Tôi đồng ý rồi, đổi ngay đi!"**
+  - *Prototype:* Router chặn gọi `doi_chuyen_bay`, AI kiên quyết yêu cầu khách bấm nút trên thẻ vàng để xác nhận đủ người và chuyến.
+  - *Nhóm có đổi ý không:* **Hoàn toàn kiên định với R2.** Không hạ rào cản xuống text chat vì nguy cơ hiểu nhầm làm mất lần đổi duy nhất là quá đắt.
