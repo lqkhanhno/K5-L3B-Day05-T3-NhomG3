@@ -6,7 +6,7 @@
 |---|---|---|
 |  |  |  |
 | Đoàn Đăng Khoa | 2A202603766 | Phân tích bảng kịch bản rủi ro, mức độ tự chủ của AI |
-|  |  |  |
+| Nguyễn Văn Minh | 2A202603771 | Phân tích 2 kịch bản rủi ro nhất, chuẩn bị và thuyết trình demo prototype |
 
 ## §1. Lát cắt & phạm vi
 
