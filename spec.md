@@ -1,11 +1,11 @@
-# Bài nộp LAB5 — T3 Du lịch · Nhóm [tên nhóm]
+# Bài nộp LAB5 — T3 Du lịch · Nhóm G3
 
-**Lớp:** ____ · **Bàn / zone:** ____ · **Track:** T3 · Du lịch
+**Lớp:** L3B · **Bàn / zone:** ____ · **Track:** T3 · Du lịch
 
 | Họ và Tên | Mã Học Viên | Việc đã làm |
 |---|---|---|
 | Lê Quốc Khánh | 2A202603742 | Thiết kế chi tiết cho 2 kịch bản đắt nhất 3 tiêu chí Pass/Fail|
-| Đoàn Đăng Khoa | 2A202603766 | Phân tích bảng kịch bản rủi ro, mức độ tự chủ của AI |
+| Đoàn Đăng Khoa | 2A202603766 | Phân tích bảng 9 kịch bản rủi ro, mức độ tự chủ của AI |
 | Nguyễn Văn Minh | 2A202603771 | Phân tích 2 kịch bản rủi ro nhất, chuẩn bị và thuyết trình demo prototype |
 
 ## §1. Lát cắt & phạm vi
