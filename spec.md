@@ -5,7 +5,7 @@
 | Họ và Tên | Mã Học Viên | Việc đã làm |
 |---|---|---|
 |  |  |  |
-|  |  |  |
+| Đoàn Đăng Khoa | 2A202603766 | Phân tích bảng kịch bản rủi ro, mức độ tự chủ của AI |
 |  |  |  |
 
 ## §1. Lát cắt & phạm vi
